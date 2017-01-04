@@ -127,8 +127,9 @@ function reduceStream(stream, generator) {
         stream.on("data", function (chunk) {
             stream.pause()
             promise = promise.then(function () {
+                var result = genStep(gen, chunk)
                 stream.resume()
-                return genStep(gen, chunk)
+                return result
             })
             .catch(reject)
         })
