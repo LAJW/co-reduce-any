@@ -116,9 +116,9 @@ describe("for-each", function () {
         var stream = streamArray([ "one", "two", "three", "four" ])
         return forEach(stream, function* (next) {
             var result = [ ]
-            var chunk
-            while (chunk = yield next) {
-                result.push(chunk.toString().toUpperCase())
+            var pair
+            while (pair = yield next) {
+                result.push(pair[1].toString().toUpperCase())
             }
             return result
         })
@@ -131,9 +131,9 @@ describe("for-each", function () {
         var stream = streamArray([ "one", "two", "three", "four" ])
         return forEach(stream, function* (next) {
             var result = [ ]
-            var chunk
-            while (chunk = yield next) {
-                result.push(yield Promise.resolve(chunk.toString().toUpperCase()))
+            var pair
+            while (pair = yield next) {
+                result.push(yield Promise.resolve(pair[1].toString().toUpperCase()))
             }
             return result
         })
@@ -175,9 +175,9 @@ describe("for-each", function () {
         var stream = streamArray([ "one", "two", "three", "four" ])
         return forEach(stream, function* (next) {
             var result = [ ]
-            var chunk
-            while (chunk = yield next) {
-                result.push(chunk.toString().toUpperCase())
+            var pair
+            while (pair = yield next) {
+                result.push(pair[1].toString().toUpperCase())
             }
             throw result
         })

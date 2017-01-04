@@ -124,10 +124,12 @@ function reduceStream(stream, generator) {
     return new Promise(function (resolve, reject) {
         var gen = generator(next)
         var promise = Promise.resolve(genStep(gen))
+        var i = 0
         stream.on("data", function (chunk) {
             stream.pause()
             promise = promise.then(function () {
-                var result = genStep(gen, chunk)
+                var result = genStep(gen, [ i, chunk ])
+                i++
                 stream.resume()
                 return result
             })
