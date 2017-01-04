@@ -39,6 +39,35 @@ describe("for-each", function () {
         ])
     })
 
+    it("array find (early return)", function () {
+        var array = [ "one", "two", "three", "four" ]
+        const result = forEach(array, function* (next) {
+            var pair
+            while (pair = yield next) {
+                if (pair[1].indexOf("h") >= 0) {
+                    return pair[1]
+                }
+            }
+        })
+        assert.deepEqual(result, "three")
+    })
+
+    it("array find (early return), async", function () {
+        var array = [ "one", "two", "three", "four" ]
+        return forEach(array, function* (next) {
+            var pair
+            while (pair = yield next) {
+                var cond = yield Promise.resolve(pair[1].indexOf("h") >= 0)
+                if (cond) {
+                    return pair[1]
+                }
+            }
+        })
+        .then(function (result) {
+            assert.deepEqual(result, "three")
+        })
+    })
+
     it("map synchronous, successful", function () {
         var map = new Map([
             [ "one", "cat" ],
@@ -124,6 +153,22 @@ describe("for-each", function () {
         })
         .then(function (result) {
             assert.deepEqual(result, [ "ONE", "TWO", "THREE", "FOUR" ])
+        })
+    })
+
+    it("stream find (early return)", function () {
+        var stream = streamArray([ "one", "two", "three", "four" ])
+        return forEach(stream, function* (next) {
+            var result = [ ]
+            var pair
+            while (pair = yield next) {
+                if (pair[1].indexOf("h") >= 0) {
+                    return pair[1]
+                }
+            }
+        })
+        .then(function (result) {
+            assert.deepEqual(result, "three")
         })
     })
 

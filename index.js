@@ -106,17 +106,17 @@ function genStep(gen, chunk, err) {
     value = state.value
     if (done) {
         return value
-    } else if (value !== next) {
-        if (isPromise(value)) {
-            return value.catch(function (err) {
-                return genStep(gen, undefined, err)
-            })
-            .then(function (value) {
-                return genStep(gen, value)
-            })
-        } else {
+    } else if (value === next) {
+        return next
+    } else if (isPromise(value)) {
+        return value.catch(function (err) {
+            return genStep(gen, undefined, err)
+        })
+        .then(function (value) {
             return genStep(gen, value)
-        }
+        })
+    } else {
+        return genStep(gen, value)
     }
 }
 
@@ -128,10 +128,15 @@ function reduceStream(stream, generator) {
         stream.on("data", function (chunk) {
             stream.pause()
             promise = promise.then(function () {
-                var result = genStep(gen, [ i, chunk ])
-                i++
-                stream.resume()
-                return result
+                return genStep(gen, [ i, chunk ])
+            })
+            .then(function (result) {
+                if (result === next) {
+                    i++
+                    stream.resume()
+                } else {
+                    resolve(result)
+                }
             })
             .catch(reject)
         })
@@ -152,8 +157,10 @@ function _reduceGen(inGen, outGen) {
             return then(genStep(outGen), function () {
                 return value
             })
-        } else {
+        } else if (value === next) {
             return _reduceGen(inGen, outGen)
+        } else {
+            return value
         }
     })
 }
