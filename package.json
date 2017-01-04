@@ -1,0 +1,45 @@
+{
+  "name": "co-reduce-any",
+  "version": "1.0.0",
+  "description": "Reduce anything in Co-like manner",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/* --recursive",
+    "coverage": "istanbul cover node_modules/.bin/_mocha -- test/* --recursive"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lajw/co-reduce-any.git"
+  },
+  "keywords": [
+    "co",
+    "reduce",
+    "any",
+    "foreach",
+    "stream",
+    "map",
+    "set",
+    "array",
+    "object",
+    "generator",
+    "promise",
+    "asynchronous"
+  ],
+  "author": "Lukasz A.J. Wrona <lukasz.andrzej.wrona@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lajw/co-reduce-any/issues"
+  },
+  "homepage": "https://github.com/lajw/co-reduce-any#readme",
+  "dependencies": {
+    "typical": "^2.6.0"
+  },
+  "devDependencies": {
+    "istanbul": "^0.4.5",
+    "mocha": "^3.2.0",
+    "stream-array": "^1.1.2"
+  }
+}
