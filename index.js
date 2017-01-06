@@ -124,6 +124,11 @@ function reduceStream(stream, generator) {
     return new Promise(function (resolve, reject) {
         var gen = generator(next)
         var promise = Promise.resolve(genStep(gen))
+        .then(function (result) {
+            if (result !== next) {
+                resolve(result)
+            }
+        })
         var i = 0
         stream.on("data", function (chunk) {
             stream.pause()
@@ -167,8 +172,12 @@ function _reduceGen(inGen, outGen) {
 
 function reduceGen(inGen, generator) {
     var outGen = generator(next)
-    return then(genStep(outGen), function () {
-        return _reduceGen(inGen, outGen)
+    return then(genStep(outGen), function (result) {
+        if (result === next) {
+            return _reduceGen(inGen, outGen)
+        } else {
+            return result
+        }
     })
 }
 

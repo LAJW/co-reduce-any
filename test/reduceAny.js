@@ -29,6 +29,29 @@ describe("for-each", function () {
         assert.ok(caught instanceof TypeError, "Should have thrown typeerror")
     })
 
+    it("no iterations, just return", function () {
+        var result = forEach([ 1 ], function* () {
+            return "one"
+        })
+        assert.deepEqual(result, "one")
+    })
+
+    it("no iterations, just return (stream)", function () {
+        return forEach(streamArray([ 1 ]), function* () {
+            return "one"
+        })
+        .then(function (result) {
+            assert.deepEqual(result, "one")
+        })
+    })
+
+    it("returning next results in undefined", function () {
+        var result = forEach([ 1 ], function* (next) {
+            return next
+        })
+        assert.deepEqual(result, undefined)
+    })
+
     it("array synchronous, successful", function () {
         var array = [ "one", "two", "three" ]
         var result = forEach(array, listIterations)
@@ -41,7 +64,7 @@ describe("for-each", function () {
 
     it("array find (early return)", function () {
         var array = [ "one", "two", "three", "four" ]
-        const result = forEach(array, function* (next) {
+        var result = forEach(array, function* (next) {
             var pair
             while (pair = yield next) {
                 if (pair[1].indexOf("h") >= 0) {
