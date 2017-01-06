@@ -1,6 +1,6 @@
 {
   "name": "co-reduce-any",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Reduce anything in Co-like manner",
   "main": "index.js",
   "directories": {
@@ -15,7 +15,9 @@
     "type": "git",
     "url": "git+https://github.com/lajw/co-reduce-any.git"
   },
-  "engines" : { "node" : ">=4.6.0" },
+  "engines": {
+    "node": ">=4.6.0"
+  },
   "keywords": [
     "co",
     "reduce",
