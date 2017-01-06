@@ -1,10 +1,19 @@
+/******************************************************************************/
+/**
+ * Unit tests for co-reduce-any
+ * @module test/reduceAny
+ * @author Lukasz A.J. Wrona <lukasz.andrzej.wrona@gmail.com>
+ * @license MIT
+ */
+/******************************************************************************/
 /* global it describe */
 
 "use strict"
-
 var reduce      = require("..")
 var assert      = require("assert")
 var streamArray = require("stream-array")
+
+/******************************************************************************/
 
 function* listIterations(next) {
     var key, pair, value
