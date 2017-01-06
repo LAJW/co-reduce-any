@@ -1,38 +1,6 @@
 /******************************************************************************/
 /**
  * Reduce anything in Co-like manner
- *
- * Provides a consistent interface for reducing arrays, strings,
- * object literals, maps, sets, generators and streams. Synchronously
- * when applicable.
- *
- * const collection = [ 1, 2, 3, 4 ]
- *
- * reduce(collection, function* (next) {
- *     const result = [ ]
- *     for (let pair; pair = yield next;) {
- *         const [ key, elem ] = pair
- *         const value = yield Promise.resolve(elem * key)
- *     }
- *     return result
- * }).then(result => console.log(resul))
- *
- * yield is overloaded
- *
- * value = yield promise // converts promise to a value, like Co
- * yield next            // waits for new [ key, element ] pair
- *
- * The key:
- * In arrays and strings, key is the elements' index
- * In Maps and object literals, key is the element's key
- * In generators Sets and node streams, key is the iteration's "i" provided
- * for consistency
- *
- * If no promises are yielded function returns a value returned from
- * supplied generator
- *
- * Iterates over node streams sequentially and always returns a promise.
- *
  * @module co-reduce-any
  * @author Lukasz A.J. Wrona <lukasz.andrzej.wrona@gmail.com>
  * @license MIT
