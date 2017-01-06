@@ -19,7 +19,7 @@ function* listIterations(next) {
     var key, pair, value
     var result = [ ]
     while (pair = yield next) {
-        key   = pair[0]
+        key = pair[0]
         value = pair[1]
         result.push([ key, yield value ])
     }
@@ -27,7 +27,6 @@ function* listIterations(next) {
 }
 
 describe("co-reduce-any", function () {
-
     it("throw typerror on non-iterable", function () {
         var caught
         try {
@@ -87,9 +86,9 @@ describe("co-reduce-any", function () {
     it("array find (early return), async", function () {
         var array = [ "one", "two", "three", "four" ]
         return reduce(array, function* (next) {
-            var pair
+            var cond, pair
             while (pair = yield next) {
-                var cond = yield Promise.resolve(pair[1].indexOf("h") >= 0)
+                cond = yield Promise.resolve(pair[1].indexOf("h") >= 0)
                 if (cond) {
                     return pair[1]
                 }
@@ -191,7 +190,6 @@ describe("co-reduce-any", function () {
     it("stream find (early return)", function () {
         var stream = streamArray([ "one", "two", "three", "four" ])
         return reduce(stream, function* (next) {
-            var result = [ ]
             var pair
             while (pair = yield next) {
                 if (pair[1].indexOf("h") >= 0) {
@@ -265,5 +263,4 @@ describe("co-reduce-any", function () {
             assert.deepEqual(err, [ "ONE", "TWO", "THREE", "FOUR" ])
         })
     })
-
 })
