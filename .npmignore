@@ -1,4 +1,7 @@
 test
+coverage
+yarn.lock
+LICENSE
 .coveralls.yaml
 .eslintrc.js
 .tern-project
