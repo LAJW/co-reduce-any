@@ -2,7 +2,7 @@
 
 "use strict"
 
-var forEach     = require("..")
+var reduce      = require("..")
 var assert      = require("assert")
 var streamArray = require("stream-array")
 
@@ -17,12 +17,12 @@ function* listIterations(next) {
     return result
 }
 
-describe("for-each", function () {
+describe("co-reduce-any", function () {
 
     it("throw typerror on non-iterable", function () {
         var caught
         try {
-            forEach(null, listIterations)
+            reduce(null, listIterations)
         } catch (error) {
             caught = error
         }
@@ -30,14 +30,14 @@ describe("for-each", function () {
     })
 
     it("no iterations, just return", function () {
-        var result = forEach([ 1 ], function* () {
+        var result = reduce([ 1 ], function* () {
             return "one"
         })
         assert.deepEqual(result, "one")
     })
 
     it("no iterations, just return (stream)", function () {
-        return forEach(streamArray([ 1 ]), function* () {
+        return reduce(streamArray([ 1 ]), function* () {
             return "one"
         })
         .then(function (result) {
@@ -46,7 +46,7 @@ describe("for-each", function () {
     })
 
     it("returning next results in undefined", function () {
-        var result = forEach([ 1 ], function* (next) {
+        var result = reduce([ 1 ], function* (next) {
             return next
         })
         assert.deepEqual(result, undefined)
@@ -54,7 +54,7 @@ describe("for-each", function () {
 
     it("array synchronous, successful", function () {
         var array = [ "one", "two", "three" ]
-        var result = forEach(array, listIterations)
+        var result = reduce(array, listIterations)
         assert.deepEqual(result, [
             [ 0, "one" ],
             [ 1, "two" ],
@@ -64,7 +64,7 @@ describe("for-each", function () {
 
     it("array find (early return)", function () {
         var array = [ "one", "two", "three", "four" ]
-        var result = forEach(array, function* (next) {
+        var result = reduce(array, function* (next) {
             var pair
             while (pair = yield next) {
                 if (pair[1].indexOf("h") >= 0) {
@@ -77,7 +77,7 @@ describe("for-each", function () {
 
     it("array find (early return), async", function () {
         var array = [ "one", "two", "three", "four" ]
-        return forEach(array, function* (next) {
+        return reduce(array, function* (next) {
             var pair
             while (pair = yield next) {
                 var cond = yield Promise.resolve(pair[1].indexOf("h") >= 0)
@@ -97,7 +97,7 @@ describe("for-each", function () {
             [ "two", "dog" ],
             [ "three", "moose" ]
         ])
-        var result = forEach(map, listIterations)
+        var result = reduce(map, listIterations)
         assert.deepEqual(result, [
             [ "one", "cat" ],
             [ "two", "dog" ],
@@ -109,7 +109,7 @@ describe("for-each", function () {
         var array = [ "one", "two", "three" ].map(function (val) {
             return Promise.resolve(val)
         })
-        return forEach(array, listIterations)
+        return reduce(array, listIterations)
         .then(function (result) {
             assert.deepEqual(result, [
                 [ 0, "one" ],
@@ -125,7 +125,7 @@ describe("for-each", function () {
             two   : "dos",
             three : "tres",
         }
-        var result = forEach(object, listIterations)
+        var result = reduce(object, listIterations)
         assert.deepEqual(result, [
             [ "one", "uno" ],
             [ "two", "dos" ],
@@ -136,7 +136,7 @@ describe("for-each", function () {
     it("throw error into generator on first iteration", function () {
         var obj = { }
         var caught
-        return forEach([ 1 ], function* (next) {
+        return reduce([ 1 ], function* (next) {
             yield next // this shouldn't be mandatory
             try {
                 yield Promise.reject(obj)
@@ -152,7 +152,7 @@ describe("for-each", function () {
     it("throw error into generator before first iteration", function () {
         var obj = { }
         var caught
-        return forEach([ 1 ], function* () {
+        return reduce([ 1 ], function* () {
             try {
                 yield Promise.reject(obj)
             } catch (err) {
@@ -166,7 +166,7 @@ describe("for-each", function () {
 
     it("stream, successful", function () {
         var stream = streamArray([ "one", "two", "three", "four" ])
-        return forEach(stream, function* (next) {
+        return reduce(stream, function* (next) {
             var result = [ ]
             var pair
             while (pair = yield next) {
@@ -181,7 +181,7 @@ describe("for-each", function () {
 
     it("stream find (early return)", function () {
         var stream = streamArray([ "one", "two", "three", "four" ])
-        return forEach(stream, function* (next) {
+        return reduce(stream, function* (next) {
             var result = [ ]
             var pair
             while (pair = yield next) {
@@ -197,7 +197,7 @@ describe("for-each", function () {
 
     it("stream async, successful", function () {
         var stream = streamArray([ "one", "two", "three", "four" ])
-        return forEach(stream, function* (next) {
+        return reduce(stream, function* (next) {
             var result = [ ]
             var pair
             while (pair = yield next) {
@@ -213,7 +213,7 @@ describe("for-each", function () {
     it("stream, throw before first chunk", function () {
         var obj = { }
         var stream = streamArray([ "one", "two", "three", "four" ])
-        return forEach(stream, function* () {
+        return reduce(stream, function* () {
             throw obj
         })
         .then(function () {
@@ -227,7 +227,7 @@ describe("for-each", function () {
     it("stream, throw on second chunk", function () {
         var obj = { }
         var stream = streamArray([ "one", "two", "three", "four" ])
-        return forEach(stream, function* (next) {
+        return reduce(stream, function* (next) {
             yield next
             throw obj
         })
@@ -241,7 +241,7 @@ describe("for-each", function () {
 
     it("stream, throw after last chunk", function () {
         var stream = streamArray([ "one", "two", "three", "four" ])
-        return forEach(stream, function* (next) {
+        return reduce(stream, function* (next) {
             var result = [ ]
             var pair
             while (pair = yield next) {
